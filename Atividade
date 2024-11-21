@@ -1,0 +1,98 @@
+## Dandara Soares de Andrade;
+## Lucas Caetano;
+
+import queue
+
+PRIORIDADES = {
+    "Crítico": 1, 
+    "Grave": 2,
+    "Leve": 3      
+}
+
+fila_pacientes = queue.PriorityQueue()
+
+def agendar_atendimento():
+    nome = input("Digite o nome do paciente: ").strip()
+    print("Escolha a enfermidade:")
+    print("1 - Crítico")
+    print("2 - Grave")
+    print("3 - Leve")
+    escolha = input("Digite o número correspondente à enfermidade: ").strip()
+    
+    match escolha:
+        case "1":
+            enfermidade = "Crítico"
+        case "2":
+            enfermidade = "Grave"
+        case "3":
+            enfermidade = "Leve"
+        case _:
+            print("Escolha inválida. Tente novamente.")
+            return
+
+    prioridade = PRIORIDADES[enfermidade]
+    fila_pacientes.put((prioridade, nome, enfermidade))
+    print(f"Paciente {nome} com enfermidade '{enfermidade}' agendado com sucesso!")
+
+def chamar_proximo_paciente():
+    if fila_pacientes.empty():
+        print("Não há pacientes na fila.")
+    else:
+        _, nome, enfermidade = fila_pacientes.get()
+        print(f"Chamando o próximo paciente: {nome} (Enfermidade: {enfermidade})")
+
+def excluir_agendamentos():
+    if fila_pacientes.empty():
+        print("Não há agendamentos para excluir.")
+    else:
+        nao_atendidos = []
+        while not fila_pacientes.empty():
+            _, nome, enfermidade = fila_pacientes.get()
+            nao_atendidos.append((nome, enfermidade))
+        
+        print("Agendamentos excluídos. Pacientes que não foram atendidos:")
+        for nome, enfermidade in nao_atendidos:
+            print(f"- {nome} (Enfermidade: {enfermidade})")
+
+def exibir_fila():
+    if fila_pacientes.empty():
+        print("A fila está vazia.")
+    else:
+        print("Pacientes na fila (em ordem de prioridade):")
+        fila_temp = []
+        while not fila_pacientes.empty():
+            paciente = fila_pacientes.get()
+            fila_temp.append(paciente)
+            _, nome, enfermidade = paciente
+            print(f"- {nome} (Enfermidade: {enfermidade})")
+       
+        for paciente in fila_temp:
+            fila_pacientes.put(paciente)
+
+def menu():
+    while True:
+        print("\nMenu:")
+        print("1 - Agendar Atendimento")
+        print("2 - Chamar Próximo Paciente")
+        print("3 - Excluir Agendamentos")
+        print("4 - Exibir Fila Atual")
+        print("5 - Sair do Programa")
+        opcao = input("Escolha uma opção: ").strip()
+        
+        match opcao:
+            case "1":
+                agendar_atendimento()
+            case "2":
+                chamar_proximo_paciente()
+            case "3":
+                excluir_agendamentos()
+            case "4":
+                exibir_fila()
+            case "5":
+                print("Encerrando o programa.")
+                break
+            case _:
+                print("Opção inválida. Tente novamente.")
+
+if __name__ == "__main__":
+    menu()
